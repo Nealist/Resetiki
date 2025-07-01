@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sumos Affet</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #111;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+      transition: all 1s ease;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 30px;
+      margin: 20px;
+      cursor: pointer;
+      transition: all 0.5s ease;
+    }
+
+    #mainBtn {
+      background-color: #ff4c4c;
+      color: white;
+    }
+
+    .circleBtn {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      font-size: 16px;
+    }
+
+    #affettimBtn {
+      background-color: #4caf50;
+      color: white;
+      transform: scale(1);
+    }
+
+    #affetmiyorumBtn {
+      background-color: #f44336;
+      color: white;
+      transform: scale(1);
+    }
+
+    .party {
+      background: radial-gradient(circle, #ff4081, #7c4dff, #18ffff);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.5); }
+      100% { filter: brightness(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <button id="mainBtn">Sumos beni affet, salaklık yaptım</button>
+
+  <div>
+    <button class="circleBtn" id="affettimBtn">Affettim</button>
+    <button class="circleBtn" id="affetmiyorumBtn">Affetmiyorum</button>
+  </div>
+
+  <script>
+    let clickCount = 0;
+    let affettimScale = 1;
+    let affetmiyorumScale = 1;
+    let affettimClicked = false;
+
+    const affettimBtn = document.getElementById('affettimBtn');
+    const affetmiyorumBtn = document.getElementById('affetmiyorumBtn');
+
+    // Affettim butonuna ilk basış
+    affettimBtn.addEventListener('click', () => {
+      if (!affettimClicked) {
+        affettimBtn.textContent = 'Kralsın sen 👑';
+        affettimClicked = true;
+      }
+    });
+
+    // Affetmiyorum davranışı
+    affetmiyorumBtn.addEventListener('click', () => {
+      clickCount++;
+
+      // Küçült affetmiyorum
+      affetmiyorumScale -= 0.2;
+      if (affetmiyorumScale < 0.4) affetmiyorumScale = 0.4;
+      affetmiyorumBtn.style.transform = `scale(${affetmiyorumScale})`;
+      affetmiyorumBtn.textContent = 'Affetmiyorum';
+
+      // Büyüt affettim
+      affettimScale += 0.3;
+      affettimBtn.style.transform = `scale(${affettimScale})`;
+
+      if (clickCount === 3) {
+        document.body.classList.add('party');
+        affettimBtn.textContent = 'Hadi hadi affettin (Kralsın sen) 🎉';
+      }
+    });
+  </script>
+
+</body>
+</html>
